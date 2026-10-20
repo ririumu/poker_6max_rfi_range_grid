@@ -1,0 +1,20 @@
+# HTTP headers for Netlify / Cloudflare Pages
+# sw.js must always be revalidated so browsers discover app updates.
+# All other responses stay revalidation-based too; offline caching is
+# handled by the service worker's Cache Storage, not HTTP cache.
+
+/sw.js
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+/
+  Cache-Control: no-cache
+/manifest.webmanifest
+  Cache-Control: no-cache
+/icons/*
+  Cache-Control: public, max-age=86400
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
