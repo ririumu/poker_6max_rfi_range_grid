@@ -10,12 +10,12 @@
 - PWA要件なし: manifest / SW / アイコン / meta類 全て欠如
 
 ## 作業アイテム（直列チェックリスト）
-- [ ] 1. リポジトリ初期化（main 初回コミット: AGENTS.md + .aidoc 計画/ログ）
-- [ ] 2. `index.html` クリーン再構成（自前テーマ、レスポンシブ、凡例・座標軸・セル詳細、localStorage、a11y）
-- [ ] 3. `manifest.webmanifest` + アイコン生成（PNG 192/512/maskable + apple-touch-icon + SVG favicon）
-- [ ] 4. `sw.js`（オフライン対応 precache + 更新通知）
-- [ ] 5. ローカル検証（http.server で配信、各リソース200、SW登録、manifest妥当性）
-- [ ] 6. README.md / OVERVIEW.md / AUDIT.md / REPORT.md 整備
+- [x] 1. リポジトリ初期化（main 初回コミット: AGENTS.md + .aidoc 計画/ログ）
+- [x] 2. `index.html` クリーン再構成（自前テーマ、レスポンシブ、凡例・座標軸・セル詳細、localStorage、a11y）
+- [x] 3. `manifest.webmanifest` + アイコン生成（PNG 192/512/maskable + apple-touch-icon + SVG favicon）
+- [x] 4. `sw.js`（オフライン対応 precache + 更新通知）
+- [x] 5. ローカル検証（http.server で配信、各リソース200、SW登録、manifest妥当性）
+- [x] 6. README.md / OVERVIEW.md / AUDIT.md / REPORT.md 整備
 
 ## 設計方針
 - index.html は CSS/JS インラインの単一ファイル（file:// 直開きでも動作、SWキャッシュも単純）
