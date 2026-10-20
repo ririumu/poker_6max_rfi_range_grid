@@ -31,13 +31,19 @@ def get_token() -> str:
     tok = os.environ.get("NETLIFY_AUTH_TOKEN")
     if tok:
         return tok
-    cfg = Path.home() / "Library/Preferences/netlify/config.json"
-    if cfg.is_file():
-        users = json.loads(cfg.read_text()).get("users", {})
-        for u in users.values():
-            tok = (u.get("auth") or {}).get("token")
-            if tok:
-                return tok
+    home = Path.home()
+    candidates = [
+        home / "Library/Preferences/netlify/config.json",  # macOS
+        home / ".config/netlify/config.json",              # Linux
+        home / ".config/configstore/netlify-cli.json",     # configstore fallback
+    ]
+    for cfg in candidates:
+        if cfg.is_file():
+            users = json.loads(cfg.read_text()).get("users", {})
+            for u in users.values():
+                tok = (u.get("auth") or {}).get("token")
+                if tok:
+                    return tok
     sys.exit("error: no Netlify token (set NETLIFY_AUTH_TOKEN or run netlify login)")
 
 

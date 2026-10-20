@@ -30,6 +30,7 @@ tools/make_icons.py      アイコン生成スクリプト（Python 標準ライ
 tools/bump_version.py    sw.js の VERSION をインクリメント
 tools/check_deploy.py    デプロイ前チェックゲート
 tools/deploy_netlify.py  Netlify REST API デプロイ（CLI不要）
+docs/DEPLOY_NETLIFY.md   Netlify デプロイマニュアル
 .aidoc/                  開発プロセスドキュメント
 ```
 
@@ -65,6 +66,7 @@ Settings → Pages → Source を **GitHub Actions** に設定してください
 #### Netlify（稼働中）
 
 **https://rfi-range-grid.netlify.app** で公開中です。
+詳細手順は **[Netlify デプロイマニュアル](docs/DEPLOY_NETLIFY.md)** を参照。
 
 ```sh
 make deploy-netlify   # check → dist → REST API で zip デプロイ

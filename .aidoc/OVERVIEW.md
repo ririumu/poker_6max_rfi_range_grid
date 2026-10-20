@@ -22,7 +22,12 @@
 - リリースは `make bump` → `make dist` → push（GH Pagesなら自動公開）
 - ローカル確認: `make serve`
 
-## 現状（Iteration 3 完了時点）
+## ドキュメント
+- `README.md` — 概要・使い方・デプロイ概要
+- `docs/DEPLOY_NETLIFY.md` — Netlify デプロイ詳細マニュアル（iter4）
+- `.aidoc/` — 開発プロセス記録
+
+## 現状（Iteration 4 完了時点）
 - **公開中（2系統）**:
   - GitHub Pages: https://ririumu.github.io/poker_6max_rfi_range_grid/（pushで自動）
   - Netlify: https://rfi-range-grid.netlify.app（`make deploy-netlify` で手動、
