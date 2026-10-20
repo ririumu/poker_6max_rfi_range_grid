@@ -4,6 +4,7 @@
   "description": "6-max 100bb のポジション別オープンレンジ（RFI）を13×13グリッドで学ぶ初心者向けツール",
   "lang": "ja",
   "dir": "ltr",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
