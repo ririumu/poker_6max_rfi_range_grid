@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>6-max RFIレンジ | ポジション別オープンレンジ</title>
+<meta name="description" content="6-max 100bb のポジション別オープンレンジ（RFI）を13×13グリッドで学ぶ初心者向けツール">
+<meta name="theme-color" content="#0b1f18">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RFIレンジ">
+<style>
+:root{
+  --bg:#0b1f18;
+  --bg-grad:radial-gradient(1200px 800px at 50% -10%, #12402f 0%, #0b1f18 60%);
+  --panel:#123026;
+  --panel-line:rgba(255,255,255,.08);
+  --text:#e8f1ec;
+  --text-dim:#8fa89d;
+  --accent:#e8b04b;
+  --pair:#e0a83f;
+  --suited:#46c07c;
+  --offsuit:#5aa2e6;
+  --cell-out:#152b22;
+  --cell-out-text:#4f6a5e;
+  --on-cell:#0a120d;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif;
+  background:var(--bg);
+  background-image:var(--bg-grad);
+  background-attachment:fixed;
+  color:var(--text);
+  min-height:100vh;
+  min-height:100dvh;
+  padding:calc(16px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));
+}
+.wrap{max-width:600px;margin:0 auto}
+header{margin:4px 0 14px}
+h1{font-size:clamp(19px,5.2vw,24px);font-weight:700;letter-spacing:.01em}
+h1 .accent{color:var(--accent)}
+.sub{font-size:12.5px;color:var(--text-dim);margin-top:4px}
+nav.pos{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.pb{
+  appearance:none;-webkit-appearance:none;border:1px solid var(--panel-line);
+  background:var(--panel);color:var(--text);
+  font-size:14px;font-weight:600;letter-spacing:.04em;
+  padding:10px 18px;min-height:44px;min-width:56px;border-radius:999px;cursor:pointer;
+  transition:background .15s ease,color .15s ease,border-color .15s ease,transform .05s ease;
+}
+.pb:active{transform:scale(.97)}
+.pb.on{background:var(--accent);border-color:var(--accent);color:#201503}
+.pb:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.stats{display:flex;gap:10px;margin:0 0 8px}
+.stat{flex:1;background:var(--panel);border:1px solid var(--panel-line);border-radius:var(--radius);padding:10px 14px}
+.stat .k{font-size:11px;color:var(--text-dim);letter-spacing:.04em}
+.stat .v{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.posdesc{font-size:12.5px;color:var(--text-dim);margin:2px 2px 12px;min-height:1.2em}
+.gridbox{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.g{
+  display:grid;grid-template-columns:auto repeat(13,minmax(0,1fr));gap:2px;
+  min-width:min(100%,330px);
+}
+.ax{
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:var(--text-dim);aspect-ratio:1;min-width:0;
+}
+.ax.corner{aspect-ratio:auto}
+.ax.row{width:14px;justify-self:end;padding-right:2px}
+.c{
+  appearance:none;-webkit-appearance:none;border:0;padding:0;
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  font-size:clamp(8px,2.5vw,11.5px);font-weight:500;letter-spacing:-.01em;
+  border-radius:3px;background:var(--cell-out);color:var(--cell-out-text);
+  cursor:pointer;font-family:inherit;
+}
+.c.pair.on{background:var(--pair);color:var(--on-cell)}
+.c.suited.on{background:var(--suited);color:var(--on-cell)}
+.c.offsuit.on{background:var(--offsuit);color:var(--on-cell)}
+.c.sel{box-shadow:inset 0 0 0 2px #fff}
+.c:focus-visible{outline:2px solid #fff;outline-offset:-2px;z-index:1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:12px 2px 0;font-size:11.5px;color:var(--text-dim)}
+.legend .sw{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.sw.pair{background:var(--pair)}.sw.suited{background:var(--suited)}.sw.offsuit{background:var(--offsuit)}.sw.out{background:var(--cell-out);border:1px solid var(--panel-line)}
+.detail{
+  margin-top:10px;background:var(--panel);border:1px solid var(--panel-line);
+  border-radius:var(--radius);padding:9px 14px;font-size:13px;min-height:38px;
+  display:flex;align-items:center;color:var(--text-dim);
+}
+.detail b{color:var(--text);font-size:15px;margin-right:8px;letter-spacing:.03em}
+.detail .pill{margin-left:auto;font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.pill.yes{background:var(--suited);color:var(--on-cell)}
+.pill.no{background:var(--cell-out);color:var(--text-dim)}
+.note{font-size:11.5px;color:var(--text-dim);margin:12px 2px 0;line-height:1.7;word-break:break-all}
+footer{margin:22px 2px 0;font-size:11px;color:var(--text-dim);line-height:1.6}
+.toast{
+  position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(120%);
+  background:#e8f1ec;color:#0b1f18;border-radius:999px;padding:11px 20px;font-size:13px;font-weight:600;
+  box-shadow:0 6px 24px rgba(0,0,0,.4);cursor:pointer;border:0;z-index:50;
+  transition:transform .25s ease;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important}
+}
+@media (max-width:360px){
+  .pb{padding:9px 14px;min-width:50px;font-size:13px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><span class="accent">6-max</span> RFIレンジ</h1>
+    <p class="sub">100bb・ポジション別オープンレイズレンジ（初心者向け）</p>
+  </header>
+
+  <nav class="pos" id="btns" role="group" aria-label="ポジション選択"></nav>
+
+  <div class="stats">
+    <div class="stat"><div class="k">オープン率</div><div class="v" id="pct">-</div></div>
+    <div class="stat"><div class="k">コンボ数</div><div class="v" id="cmb">-</div></div>
+  </div>
+  <p class="posdesc" id="posdesc"></p>
+
+  <div class="gridbox">
+    <div class="g" id="grid" role="grid" aria-label="ハンドレンジ 13×13 グリッド"></div>
+  </div>
+
+  <div class="legend">
+    <span><i class="sw pair"></i>ペア</span>
+    <span><i class="sw suited"></i>スーテッド</span>
+    <span><i class="sw offsuit"></i>オフスーツ</span>
+    <span><i class="sw out"></i>レンジ外</span>
+  </div>
+
+  <div class="detail" id="detail"><span>セルをタップするとハンドの詳細を表示します</span></div>
+
+  <p class="note" id="note"></p>
+
+  <footer>
+    6-max・100bb 想定の代表的なオープンレンジ。左上がスーテッド、右下がオフスーツ、対角がペア。<br>
+    対戦相手や状況に応じて調整してください。オフラインでも利用できます。
+  </footer>
+</div>
+
+<button class="toast" id="toast" hidden>新しいバージョンがあります。タップして更新</button>
+<noscript><p style="padding:16px">このアプリは JavaScript が必要です。</p></noscript>
+
+<script>
+"use strict";
+var R="AKQJT98765432";
+var P={
+UTG:"22+ A2s+ K9s+ QTs+ JTs T9s 98s 87s ATo+ KJo+",
+HJ:"22+ A2s+ K8s+ Q9s+ J9s+ T9s 98s 87s 76s 65s ATo+ KTo+ QJo",
+CO:"22+ A2s+ K5s+ Q8s+ J8s+ T8s+ 97s+ 86s+ 75s+ 65s 54s A8o+ KTo+ QTo+ JTo",
+BTN:"22+ A2s+ K2s+ Q4s+ J6s+ T6s+ 96s+ 85s+ 74s+ 64s+ 53s+ 43s A2o+ K8o+ Q9o+ J9o+ T8o+",
+SB:"22+ A2s+ K2s+ Q5s+ J7s+ T7s+ 96s+ 86s+ 75s+ 65s 54s A4o+ K9o+ QTo+ JTo"
+};
+var DESC={
+UTG:"アンダーザガン。最も早いポジション。後ろに5人いるため最もタイトに。",
+HJ:"ハイジャック。UTGの一つ後。まだタイトめだが少し広がる。",
+CO:"カットオフ。ボタンの一つ前。ここから一気にレンジが広がる。",
+BTN:"ボタン。最も有利なポジション。最も広くオープンできる。",
+SB:"スモールブラインド。残るはBBのみ。レイズかフォールドの2択。"
+};
+var N={SB:"SBはレイズオンリーの簡略版。ソルバーはリンプ混合戦略を使うことが多い。"};
+var TYPE={pair:"ペア",suited:"スーテッド",offsuit:"オフスーツ"};
+
+function ex(s){
+  var o=new Set();
+  s.split(" ").forEach(function(t){
+    var p=t.endsWith("+");
+    if(p)t=t.slice(0,-1);
+    if(t.length===2){
+      var r=R.indexOf(t[0]);
+      if(p){for(var i=0;i<=r;i++)o.add(R[i]+R[i])}else o.add(t);
+    }else{
+      var h=R.indexOf(t[0]),k=R.indexOf(t[1]),x=t[2];
+      if(p){for(var i=h+1;i<=k;i++)o.add(R[h]+R[i]+x)}else o.add(t);
+    }
+  });
+  return o;
+}
+function cb(h){return h.length===2?6:h[2]==="s"?4:12}
+function handAt(i,j){return i===j?R[i]+R[i]:i<j?R[i]+R[j]+"s":R[j]+R[i]+"o"}
+function typeOf(h){return h.length===2?"pair":h[2]==="s"?"suited":"offsuit"}
+
+var grid=document.getElementById("grid");
+var detail=document.getElementById("detail");
+var cells=[];
+var curSet=null, curPos=null;
+
+function buildGrid(){
+  var c=document.createElement("div");
+  c.className="ax corner";grid.appendChild(c);
+  for(var j=0;j<13;j++){var d=document.createElement("div");d.className="ax";d.textContent=R[j];grid.appendChild(d)}
+  for(var i=0;i<13;i++){
+    var rl=document.createElement("div");rl.className="ax row";rl.textContent=R[i];grid.appendChild(rl);
+    for(var j2=0;j2<13;j2++){
+      var h=handAt(i,j2);
+      var b=document.createElement("button");
+      b.className="c "+typeOf(h);
+      b.textContent=h;
+      b.dataset.h=h;b.dataset.i=i;b.dataset.j=j2;
+      b.setAttribute("role","gridcell");
+      b.setAttribute("aria-label",h);
+      b.tabIndex=-1;
+      grid.appendChild(b);
+      cells.push(b);
+    }
+  }
+}
+
+function show(pos){
+  curPos=pos;
+  var set=ex(P[pos]);curSet=set;
+  var n=0;set.forEach(function(h){n+=cb(h)});
+  document.getElementById("pct").textContent=(n/1326*100).toFixed(1)+"%";
+  document.getElementById("cmb").textContent=n+" / 1326";
+  document.getElementById("posdesc").textContent=DESC[pos]||"";
+  document.getElementById("note").textContent=P[pos]+(N[pos]?"　※"+N[pos]:"");
+  cells.forEach(function(b){b.classList.toggle("on",set.has(b.dataset.h))});
+  document.querySelectorAll(".pb").forEach(function(b){
+    var on=b.dataset.p===pos;
+    b.classList.toggle("on",on);
+    b.setAttribute("aria-pressed",on?"true":"false");
+  });
+  try{localStorage.setItem("rfi-pos",pos)}catch(e){}
+}
+
+function showDetail(h){
+  var inn=curSet&&curSet.has(h);
+  detail.innerHTML="";
+  var b=document.createElement("b");b.textContent=h;detail.appendChild(b);
+  var s=document.createElement("span");
+  s.textContent=TYPE[typeOf(h)]+"・"+cb(h)+"コンボ";
+  detail.appendChild(s);
+  var pill=document.createElement("span");
+  pill.className="pill "+(inn?"yes":"no");
+  pill.textContent=inn?curPos+" レンジ内":"レンジ外";
+  detail.appendChild(pill);
+}
+
+grid.addEventListener("click",function(e){
+  var t=e.target;
+  if(!t.classList||!t.classList.contains("c"))return;
+  cells.forEach(function(b){b.classList.toggle("sel",b===t)});
+  showDetail(t.dataset.h);
+});
+grid.addEventListener("keydown",function(e){
+  var t=e.target;
+  if(!t.classList||!t.classList.contains("c"))return;
+  var i=+t.dataset.i,j=+t.dataset.j,moved=false;
+  if(e.key==="ArrowRight"){j=Math.min(12,j+1);moved=true}
+  else if(e.key==="ArrowLeft"){j=Math.max(0,j-1);moved=true}
+  else if(e.key==="ArrowDown"){i=Math.min(12,i+1);moved=true}
+  else if(e.key==="ArrowUp"){i=Math.max(0,i-1);moved=true}
+  else if(e.key==="Enter"||e.key===" "){e.preventDefault();t.click();return}
+  if(moved){e.preventDefault();cells[i*13+j].focus()}
+});
+
+buildGrid();
+var B=document.getElementById("btns");
+Object.keys(P).forEach(function(p){
+  var b=document.createElement("button");
+  b.className="pb";b.dataset.p=p;b.textContent=p;
+  b.setAttribute("aria-pressed","false");
+  b.onclick=function(){show(p)};
+  B.appendChild(b);
+});
+var saved=null;
+try{saved=localStorage.getItem("rfi-pos")}catch(e){}
+show(saved&&P[saved]?saved:"BTN");
+</script>
+<script>
+"use strict";
+if("serviceWorker" in navigator){
+  window.addEventListener("load",function(){
+    navigator.serviceWorker.register("sw.js").then(function(reg){
+      reg.addEventListener("updatefound",function(){
+        var sw=reg.installing;
+        sw.addEventListener("statechange",function(){
+          if(sw.state==="installed"&&navigator.serviceWorker.controller){
+            var t=document.getElementById("toast");
+            t.hidden=false;
+            requestAnimationFrame(function(){t.classList.add("show")});
+            t.onclick=function(){sw.postMessage("skipWaiting")};
+          }
+        });
+      });
+    }).catch(function(){});
+    var reloaded=false;
+    navigator.serviceWorker.addEventListener("controllerchange",function(){
+      if(reloaded)return;reloaded=true;location.reload();
+    });
+  });
+}
+</script>
+</body>
+</html>
