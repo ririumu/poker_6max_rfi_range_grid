@@ -30,6 +30,15 @@
    - check_deploy 警告ゼロ化、dist 9ファイル全て200、_headers も配信確認
 6. `iter2/06-docs`: README デプロイ手順・OVERVIEW/AUDIT/REPORT（本ブランチ）
 
+## 追記: デプロイ実施（ユーザー依頼「git push まで」）
+- `git push -u origin main` → 空リモートへ初回push成功（23コミット）
+- Pages未設定 → APIで有効化を試行 → 422「プラン非対応」= private repo
+- リポジトリを public に変更（布教用PWAで秘匿情報なし・目的整合）
+- `gh api POST /pages build_type=workflow` → Pages有効化
+- 初回workflow run(push由来)は未設定時起動でfailure → `gh workflow run` で再実行 → success
+- 公開確認: https://ririumu.github.io/poker_6max_rfi_range_grid/ 全リソース200、
+  title/manifest内容も本物であることを確認
+
 ## 判断メモ
 - CIでのパッケージングは `make dist` を直接呼ぶ → ローカルとCIで同一工程
 - iconsをimmutableにしなかった理由: SWのaddAllもHTTPキャッシュを通るため、

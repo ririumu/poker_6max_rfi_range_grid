@@ -23,8 +23,14 @@
 - deploy.yml: YAML妥当（jobs=[deploy]）
 - bump_version: rfi-v1→v2→--set復元 まで動作確認
 
+## デプロイ結果
+- **公開URL**: https://ririumu.github.io/poker_6max_rfi_range_grid/ （稼働確認済み・全リソース200）
+- リポジトリ: public 化（private は Pages 非対応プランのため）
+- CI: push 由来の初回 run は Pages 未設定で failure → 設定後の dispatch run で success
+- 以後 main への push で自動デプロイ
+
 ## 残課題・運用メモ
-- GitHub Pages側の設定（Settings → Pages → Source = GitHub Actions）は
-  リポジトリ上での1回のみの手動操作が必要
+- ~~GitHub Pages側の設定~~ → APIで有効化済み（build_type=workflow）
 - アプリ変更時は `make bump` を忘れずに（CIでも差分検知はしていない）
 - iOSスプラッシュ画像・レンジ編集機能は将来イテレーション候補
+- 独自ドメイン/cname 設定は未対応（必要なら `cname` を Pages APIで追加）

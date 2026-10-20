@@ -52,13 +52,13 @@ PWA 機能（Service Worker・インストール）は `http(s)://` 配信時の
 make dist      # デプロイ前チェック → dist/ へ公開ファイルを集約
 ```
 
-#### GitHub Pages（自動デプロイ）
+#### GitHub Pages（自動デプロイ・稼働中）
 
-`.github/workflows/deploy.yml` 同梱。main への push で自動公開されます。
+**https://ririumu.github.io/poker_6max_rfi_range_grid/** で公開中です。
 
-1. リポジトリを GitHub に push
-2. Settings → Pages → Source を **GitHub Actions** に設定
-3. 以後 main への push で自動デプロイ（Actions タブに公開URLが出ます）
+`.github/workflows/deploy.yml` により main への push で自動デプロイされます。
+（Pages の build_type=workflow は設定済み。別リポジトリで利用する場合は
+Settings → Pages → Source を **GitHub Actions** に設定してください）
 
 #### Netlify / Cloudflare Pages
 

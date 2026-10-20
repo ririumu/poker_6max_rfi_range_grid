@@ -23,7 +23,7 @@
 - ローカル確認: `make serve`
 
 ## 現状（Iteration 2 完了時点）
-- HEAD: docs更新コミット（README デプロイ手順/.aidoc整備）
-- デプロイ経路: GitHub Pages(Actions) / Netlify・CF Pages(_headers) /
-  任意ホスト(dist/) の3系統が整備済み
-- GH Pages利用にはリポジトリ設定で Pages Source=GitHub Actions が必要
+- **公開中**: https://ririumu.github.io/poker_6max_rfi_range_grid/
+- リポジトリ: https://github.com/ririumu/poker_6max_rfi_range_grid（public）
+- デプロイ: main push → Actions → GitHub Pages 自動公開（稼働確認済み）
+- 他経路も維持: Netlify・CF Pages(_headers) / 任意ホスト(make dist)
