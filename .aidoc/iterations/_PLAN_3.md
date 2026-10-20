@@ -10,11 +10,11 @@ Netlify に dist 相当を実デプロイし、公開URLを取得・検証する
 - アプローチ: CLI インストール不要の Netlify REST API（zip deploy）で実行
 
 ## 作業アイテム（直列チェックリスト）
-- [ ] 1. イテレーション初期化（USERINPUT追記・_PLAN_3）
-- [ ] 2. `netlify.toml` 追加（git連携デプロイにも対応できるよう command/publish 定義）
-- [ ] 3. APIデプロイ実施: トークン検証 → サイト作成 → `make dist` → zip deploy
-- [ ] 4. 公開検証: 全リソース200・`_headers` 適用（Cache-Control実測）・manifest内容
-- [ ] 5. docs更新（README Netlify節に実URL・AUDIT_3・REPORT_3・OVERVIEW）＋ push
+- [x] 1. イテレーション初期化（USERINPUT追記・_PLAN_3）
+- [x] 2. `netlify.toml` 追加（git連携デプロイにも対応できるよう command/publish 定義）
+- [x] 3. APIデプロイ実施: トークン検証 → サイト作成 → `make dist` → zip deploy
+- [x] 4. 公開検証: 全リソース200・`_headers` 適用（Cache-Control実測）・manifest内容
+- [x] 5. docs更新（README Netlify節に実URL・AUDIT_3・REPORT_3・OVERVIEW）＋ push
 
 ## 設計方針
 - サイト名候補: `rfi-range-grid`（衝突時は代替名）

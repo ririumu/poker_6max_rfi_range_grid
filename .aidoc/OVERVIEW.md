@@ -22,8 +22,11 @@
 - リリースは `make bump` → `make dist` → push（GH Pagesなら自動公開）
 - ローカル確認: `make serve`
 
-## 現状（Iteration 2 完了時点）
-- **公開中**: https://ririumu.github.io/poker_6max_rfi_range_grid/
+## 現状（Iteration 3 完了時点）
+- **公開中（2系統）**:
+  - GitHub Pages: https://ririumu.github.io/poker_6max_rfi_range_grid/（pushで自動）
+  - Netlify: https://rfi-range-grid.netlify.app（`make deploy-netlify` で手動、
+    netlify.toml で git連携にも対応可）
 - リポジトリ: https://github.com/ririumu/poker_6max_rfi_range_grid（public）
-- デプロイ: main push → Actions → GitHub Pages 自動公開（稼働確認済み）
-- 他経路も維持: Netlify・CF Pages(_headers) / 任意ホスト(make dist)
+- Netlify サイトIDは `.netlify/state.json`（gitignore・ローカル状態）
+- tools/: make_icons / bump_version / check_deploy / deploy_netlify（全て stdlib）

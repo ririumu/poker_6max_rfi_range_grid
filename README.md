@@ -22,12 +22,14 @@ index.html               単一ファイルアプリ（CSS/JS インライン）
 manifest.webmanifest     PWA マニフェスト
 sw.js                    Service Worker（オフライン対応・更新管理）
 icons/                   アイコン類（PNG 192/512/maskable/apple-touch + SVG favicon）
-Makefile                 serve / icons / bump / check / dist / clean
+Makefile                 serve / icons / bump / check / dist / deploy-netlify / clean
 _headers                 Netlify・CF Pages 用ヘッダ（sw.js no-cache 等）
+netlify.toml             Netlify git連携用ビルド設定
 .github/workflows/       GitHub Pages 自動デプロイ
 tools/make_icons.py      アイコン生成スクリプト（Python 標準ライブラリのみ）
 tools/bump_version.py    sw.js の VERSION をインクリメント
 tools/check_deploy.py    デプロイ前チェックゲート
+tools/deploy_netlify.py  Netlify REST API デプロイ（CLI不要）
 .aidoc/                  開発プロセスドキュメント
 ```
 
@@ -60,15 +62,23 @@ make dist      # デプロイ前チェック → dist/ へ公開ファイルを�
 （Pages の build_type=workflow は設定済み。別リポジトリで利用する場合は
 Settings → Pages → Source を **GitHub Actions** に設定してください）
 
-#### Netlify / Cloudflare Pages
+#### Netlify（稼働中）
 
-- `make dist` 後、`dist/` を publish ディレクトリに指定
-- `_headers` が同梱されるため、sw.js の no-cache・セキュリティヘッダが自動適用
-- Netlify Drop へのドラッグ&ドロップにも対応
+**https://rfi-range-grid.netlify.app** で公開中です。
 
-#### その他の静的ホスト
+```sh
+make deploy-netlify   # check → dist → REST API で zip デプロイ
+```
 
-`dist/` の中身をそのままアップロード。HTTPS であれば PWA として動作します。
+- 認証: `netlify` CLI のログイン情報、または環境変数 `NETLIFY_AUTH_TOKEN`
+- サイト情報は `.netlify/state.json` に保持（2回目以降は同一サイトへデプロイ）
+- `netlify.toml` 同梱のため、Netlify UI で GitHub 連携すれば自動デプロイにも対応
+- `_headers` が同梱され、sw.js の no-cache・セキュリティヘッダが自動適用
+
+#### Cloudflare Pages / その他の静的ホスト
+
+- `make dist` 後、`dist/` を publish ディレクトリ or アップロード
+- `_headers` は Cloudflare Pages でも適用。任意ホストでも HTTPS なら PWA 動作
 
 #### リリース手順
 
