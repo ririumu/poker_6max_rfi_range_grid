@@ -1,0 +1,8 @@
+# Netlify configuration
+# Git-connected deploys: Netlify runs `make dist`, publishes `dist/`.
+# _headers is already inside dist/, so cache/security headers apply
+# automatically. CLI/API zip deploys of dist/ need no config.
+
+[build]
+  command = "make dist"
+  publish = "dist"
