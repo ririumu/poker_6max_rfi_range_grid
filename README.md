@@ -22,7 +22,12 @@ index.html               単一ファイルアプリ（CSS/JS インライン）
 manifest.webmanifest     PWA マニフェスト
 sw.js                    Service Worker（オフライン対応・更新管理）
 icons/                   アイコン類（PNG 192/512/maskable/apple-touch + SVG favicon）
+Makefile                 serve / icons / bump / check / dist / clean
+_headers                 Netlify・CF Pages 用ヘッダ（sw.js no-cache 等）
+.github/workflows/       GitHub Pages 自動デプロイ
 tools/make_icons.py      アイコン生成スクリプト（Python 標準ライブラリのみ）
+tools/bump_version.py    sw.js の VERSION をインクリメント
+tools/check_deploy.py    デプロイ前チェックゲート
 .aidoc/                  開発プロセスドキュメント
 ```
 
@@ -31,7 +36,7 @@ tools/make_icons.py      アイコン生成スクリプト（Python 標準ライ
 ### ローカルで試す
 
 ```sh
-python3 -m http.server 8000
+make serve    # = python3 -m http.server 8000
 # → http://localhost:8000
 ```
 
@@ -40,14 +45,51 @@ PWA 機能（Service Worker・インストール）は `http(s)://` 配信時の
 
 ### デプロイ
 
-静的ファイルのみ。GitHub Pages / Netlify / Cloudflare Pages などへ
-リポジトリをそのまま公開すれば動作します（相対パスのみ使用のため
-サブパス配信にも対応）。
+公開対象は `dist/` に集約されます（公開されるのはアプリファイルのみ。
+`.aidoc/`・`tools/`・ドキュメント類は含まれません）。
+
+```sh
+make dist      # デプロイ前チェック → dist/ へ公開ファイルを集約
+```
+
+#### GitHub Pages（自動デプロイ）
+
+`.github/workflows/deploy.yml` 同梱。main への push で自動公開されます。
+
+1. リポジトリを GitHub に push
+2. Settings → Pages → Source を **GitHub Actions** に設定
+3. 以後 main への push で自動デプロイ（Actions タブに公開URLが出ます）
+
+#### Netlify / Cloudflare Pages
+
+- `make dist` 後、`dist/` を publish ディレクトリに指定
+- `_headers` が同梱されるため、sw.js の no-cache・セキュリティヘッダが自動適用
+- Netlify Drop へのドラッグ&ドロップにも対応
+
+#### その他の静的ホスト
+
+`dist/` の中身をそのままアップロード。HTTPS であれば PWA として動作します。
+
+#### リリース手順
+
+```sh
+# 1. アプリを変更したら必ずバージョンを上げる（sw.js のキャッシュ更新のため）
+make bump
+
+# 2. デプロイ前チェック（CIでも自動実行）
+make check
+
+# 3. パッケージ & デプロイ
+make dist
+```
+
+その他のターゲット: `make serve`（ローカルプレビュー）、`make icons`、
+`make clean`。
 
 ### アイコン再生成
 
 ```sh
-python3 tools/make_icons.py
+make icons   # または python3 tools/make_icons.py
 ```
 
 ## 対応環境
@@ -59,9 +101,9 @@ python3 tools/make_icons.py
 
 ## 更新のしかた
 
-`index.html` などを変更したら `sw.js` 冒頭の `VERSION` 定数
-（例: `rfi-v1` → `rfi-v2`）を上げてください。新キャッシュが配信され、
-利用中の画面に更新トーストが表示されます。
+`index.html` などを変更したら `make bump` で `sw.js` の `VERSION`
+を上げてください（`tools/bump_version.py` が自動インクリメント）。
+新キャッシュが配信され、利用中の画面に更新トーストが表示されます。
 
 ## レンジデータについて
 
